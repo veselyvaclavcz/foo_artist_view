@@ -1,0 +1,61 @@
+# Build artifacts
+*.obj
+*.lib
+*.exp
+*.dll
+*.pdb
+*.ilk
+
+# Test and temporary files
+*.json
+*.html
+*.jpg
+*.log
+temp_*
+test_*
+compile_output.txt
+nul
+
+# Old build scripts (keeping only the latest)
+BUILD_*.bat
+!BUILD_V28_EDITMODE.bat
+CREATE_*.bat
+DIRECT_*.bat
+PACKAGE_*.bat
+QUICK_*.bat
+simple_*.bat
+compile*.cmd
+compile*.bat
+direct_build.bat
+build.ps1
+FIND_VS.bat
+
+# Old component versions
+foo_artist_bio_*.fb2k-component
+!foo_artist_bio_v28_EDITMODE.fb2k-component
+foo_artist_bio_*.dll
+foo_artist_bio-*.fb2k-component
+foo_artist_bio_v*.dll
+
+# Old source versions
+artist_bio_*.cpp
+!artist_bio_v14_FINAL.cpp
+foo_artist_bio_*.cpp
+
+# Documentation (keeping only main README)
+*.md
+!README.md
+
+# Other projects
+foo_artist_bio_spotify_lastfm/
+
+# IDE and system files
+.vs/
+.vscode/
+*.suo
+*.user
+*.sdf
+*.opensdf
+
+# Keep SDK
+!SDK-2025-03-07/
