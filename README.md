@@ -1,151 +1,62 @@
 # Artist Biography Viewer for foobar2000
 
-A comprehensive artist biography component for foobar2000 that displays artist information, images, and statistics from Last.fm and Spotify.
+> **Status: archived (no longer maintained).** The source code is kept for reference.
+> Prebuilt components were removed in November 2026 because they contained API credentials
+> that have since been revoked or retired. To use the component you need to build it yourself
+> and supply your own Spotify and Last.fm API keys.
 
-## Features
-
-### 🎨 Dual Layout Modes
-- **Horizontal Layout**: Image on the left, text on the right
-- **Vertical Layout**: Image on top, text below
-- **Draggable Dividers**: Resize image and text areas in both layouts
-- **Double-click** to quickly switch between layouts
-
-### 📝 Rich Artist Information
-- High-quality artist images from Spotify and Last.fm
-- Comprehensive biography with proper UTF-8 text encoding
-- Artist statistics (listeners, play counts)
-- Top tracks and albums
-- Similar artists recommendations
-- Automatic dark/light mode matching foobar2000 theme
-
-### 🎯 User Interface
-- **Right-click context menu** for layout switching
-- **Layout Edit Mode support** - menu items appear in foobar2000's edit mode
-- Smooth scrolling with custom scrollbar
-- Responsive design that adapts to window resizing
+A foobar2000 UI panel that shows the biography, image, listener statistics, top tracks and
+similar artists for the currently playing artist, using data from Last.fm and Spotify.
 
 ## Screenshots
 
-### Vertical Layout
-![Vertical Layout](screenshot_vertical.png)
+| Vertical layout | Horizontal layout |
+|---|---|
+| ![Vertical layout](screenshot_vertical.png) | ![Horizontal layout](screenshot_horizontal.png) |
 
-### Horizontal Layout  
-![Horizontal Layout](screenshot_horizontal.png)
+## Features
 
-## Installation
+- **Two layouts:** image beside the text or above it; double-click to switch, drag the divider to resize.
+- **Artist information:** biography with correct Unicode rendering, listeners and play counts,
+  top tracks and albums, similar artists.
+- **Theme aware:** follows the foobar2000 dark/light mode.
+- **Layout Edit Mode:** layout options are available from the foobar2000 edit-mode menu.
+- **Persistent content (v30):** the last loaded artist stays visible after restart.
 
-1. Download the latest release: `foo_artist_bio_v28_EDITMODE.fb2k-component`
-2. Close foobar2000 completely
-3. Double-click the `.fb2k-component` file to install
-4. Restart foobar2000
-5. Add the "Artist Biography" panel to your layout
+## Source files
 
-## Usage
+| File | Version | Notes |
+|---|---|---|
+| `artist_bio_v30_PERSISTENT.cpp` | 30.0.0 | Latest version |
+| `artist_bio_v14_FINAL.cpp` | 27.0.0 | Previous version, kept for reference |
 
-### Adding to Your Layout
-1. Right-click in your foobar2000 layout
-2. Select "Replace UI Element" or "Add UI Element"
-3. Choose "Artist Biography" from the list
+## Building
 
-### Controls
-- **Double-click**: Switch between horizontal and vertical layouts
-- **Right-click**: Open context menu with layout options
-- **Drag divider**: Resize image/text areas
-- **Mouse wheel**: Scroll through biography text
+There is no project file in this repository. To build the component:
 
-### Layout Edit Mode
-When in foobar2000's layout edit mode:
-- Right-click the component to see layout options in the edit menu
-- Switch layouts without leaving edit mode
-- Refresh artist information on demand
+1. Create a Visual Studio 2022 C++ DLL project (x64, Release).
+2. Add the [foobar2000 SDK](https://www.foobar2000.org/SDK) (tested with SDK 2025-03-07) and
+   reference its `foobar2000_SDK`, `pfc`, `helpers`, `shared` and `foobar2000_component_client` projects.
+3. Add `artist_bio_v30_PERSISTENT.cpp` and link `winhttp.lib`, `wininet.lib`, `gdiplus.lib`.
+4. Fill in your own keys: `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`
+   ([Spotify for Developers](https://developer.spotify.com/dashboard)) and `api_key`
+   ([Last.fm API](https://www.last.fm/api/account/create)). Do not commit them.
+5. Package the DLL as a `.fb2k-component` (a zip archive) and install it in foobar2000.
 
-## Technical Details
+## Security notes
 
-### Version 28.0.0 Improvements
-- ✅ Fixed UTF-8 text encoding issues - no more weird characters
-- ✅ Perfect image scaling in both layout modes
-- ✅ Draggable dividers for customizable layouts
-- ✅ Layout edit mode menu integration
-- ✅ Proper text rendering without cutoff
-- ✅ Fixed header statistics formatting
-
-### Requirements
-- foobar2000 v2.0 or later
-- Windows 10/11 (64-bit)
-- Internet connection for fetching artist data
-
-### API Integration
-- **Spotify Web API**: High-resolution artist images
-- **Last.fm API**: Biography, statistics, and related data
-- Automatic fallback between services for maximum reliability
-
-## Building from Source
-
-### Prerequisites
-- Visual Studio 2022 Build Tools
-- foobar2000 SDK (included in repository)
-- Windows SDK
-
-### Build Instructions
-```batch
-cd foo_artist_view
-BUILD_V28_EDITMODE.bat
-```
-
-The compiled component will be created as `foo_artist_bio_v28_EDITMODE.fb2k-component`
-
-## Troubleshooting
-
-### Component doesn't appear after installation
-1. Ensure foobar2000 is completely closed during installation
-2. Check Preferences → Components to verify installation
-3. Remove any older versions of the component
-
-### No artist information displayed
-1. Ensure you're playing a track with proper artist tags
-2. Check your internet connection
-3. Try the "Refresh Artist Info" option from the context menu
-
-### Text appears garbled or with strange characters
-- This issue has been fixed in v28. Please update to the latest version.
-
-## License
-
-This component is provided as-is for use with foobar2000. 
-
-## Credits
-
-- Built with foobar2000 SDK 2025-03-07
-- Uses Spotify Web API and Last.fm API for data retrieval
-- Developed by the foobar2000 community
+- Earlier versions embedded API credentials in the source and disabled TLS certificate
+  validation. Both were removed in [#2](https://github.com/veselyvaclavcz/foo_artist_view/pull/2);
+  all requests now use HTTPS with full certificate validation.
+- Old credentials remain in the git history. The Spotify application was deleted; the
+  Last.fm key is retired and must not be used.
 
 ## Changelog
 
-### v28.0.0 (2025-08-18)
-- Added layout edit mode menu support
-- Fixed edit mode context menu integration
-- Improved menu handling in different modes
+- **30.0.0 (2025-08-29):** persistent content between sessions.
+- **28.0.0 (2025-08-18):** Layout Edit Mode menu support.
+- **23.0.0 – 27.0.0:** Unicode text rendering, image scaling, draggable dividers, header formatting.
 
-### v27.0.0
-- Initial menu implementation attempts
+## License
 
-### v26.0.0
-- Fixed image scaling in vertical layout
-- Perfect aspect ratio maintenance
-
-### v25.0.0
-- Added draggable divider in vertical layout
-- Fixed header statistics formatting (removed extra commas)
-
-### v24.0.0
-- Fixed text cutoff issues
-- Proper text height calculation
-
-### v23.0.0
-- Switched to DrawTextW for proper Unicode support
-- Fixed UTF-8 to UTF-16 conversion
-
-### Earlier versions
-- Multiple attempts at fixing text encoding
-- Basic dual layout implementation
-- Initial Spotify and Last.fm integration
+MIT, see [LICENSE](LICENSE). foobar2000 and its SDK are subject to their own license terms.
