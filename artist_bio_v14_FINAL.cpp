@@ -370,8 +370,7 @@ private:
         
         DWORD dwFlags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE;
         if (use_https) {
-            dwFlags |= INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | 
-                      INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+            dwFlags |= INTERNET_FLAG_SECURE;
         }
         
         HINTERNET hRequest = HttpOpenRequestW(hConnect, L"GET", path.c_str(), 
@@ -429,8 +428,7 @@ private:
         }
         
         DWORD dwFlags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | 
-                       INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | 
-                       INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+                       INTERNET_FLAG_SECURE;
         
         HINTERNET hRequest = HttpOpenRequestW(hConnect, L"POST", path.c_str(), 
             NULL, NULL, NULL, dwFlags, 0);
@@ -484,8 +482,7 @@ private:
         }
         
         DWORD dwFlags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | 
-                       INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | 
-                       INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+                       INTERNET_FLAG_SECURE;
         
         HINTERNET hRequest = HttpOpenRequestW(hConnect, L"GET", path.c_str(), 
             NULL, NULL, NULL, dwFlags, 0);
@@ -711,14 +708,6 @@ private:
             return response_data;
         }
         
-        // Disable SSL certificate validation for testing
-        if (use_https) {
-            DWORD dwFlags = SECURITY_FLAG_IGNORE_UNKNOWN_CA | 
-                           SECURITY_FLAG_IGNORE_CERT_WRONG_USAGE |
-                           SECURITY_FLAG_IGNORE_CERT_CN_INVALID |
-                           SECURITY_FLAG_IGNORE_CERT_DATE_INVALID;
-            WinHttpSetOption(hRequest, WINHTTP_OPTION_SECURITY_FLAGS, &dwFlags, sizeof(dwFlags));
-        }
         
         BOOL bResults = WinHttpSendRequest(
             hRequest,
@@ -868,8 +857,8 @@ public:
     
 private:
     // Spotify credentials and functions
-    const std::string SPOTIFY_CLIENT_ID = "36c970e603804c17acd54b2a1f2f4e8d";
-    const std::string SPOTIFY_CLIENT_SECRET = "9197266313734f199e0c93e40f373f47";
+    const std::string SPOTIFY_CLIENT_ID = ""; // Supply your own Spotify client ID. The previously published one was revoked (2026-11).
+    const std::string SPOTIFY_CLIENT_SECRET = ""; // Supply your own Spotify client secret. The previously published one was revoked (2026-11).
     
     std::string get_spotify_access_token() {
         console::print("Artist Bio: Getting Spotify access token...");
@@ -899,8 +888,7 @@ private:
         }
         
         DWORD dwFlags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | 
-                       INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | 
-                       INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+                       INTERNET_FLAG_SECURE;
         
         HINTERNET hRequest = HttpOpenRequestW(hConnect, L"POST", L"/api/token", 
             NULL, NULL, NULL, dwFlags, 0);
@@ -988,8 +976,7 @@ private:
         }
         
         DWORD dwFlags = INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE | 
-                       INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | 
-                       INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+                       INTERNET_FLAG_SECURE;
         
         std::wstring wide_path = string_to_wstring(search_path);
         HINTERNET hRequest = HttpOpenRequestW(hConnect, L"GET", wide_path.c_str(), 
@@ -1042,7 +1029,7 @@ private:
     
     void get_lastfm_data(const std::string& artist_name, artist_info& result) {
         std::wstring host = L"ws.audioscrobbler.com";
-        std::string api_key = "b25b959554ed76058ac220b7b2e0a026";
+        std::string api_key = ""; // Supply your own key. The previously published key was revoked (2026-11).
         std::string encoded_artist = url_encode(artist_name);
         std::wstring path = string_to_wstring("/2.0/?method=artist.getinfo&artist=" + encoded_artist + "&api_key=" + api_key + "&format=json");
         
@@ -1295,7 +1282,7 @@ private:
     }
     
     void get_top_tracks(const std::string& artist_name, artist_info& info) {
-        std::string api_key = "b25b959554ed76058ac220b7b2e0a026";
+        std::string api_key = ""; // Supply your own key. The previously published key was revoked (2026-11).
         std::string encoded_artist = url_encode(artist_name);
         std::string path = "/2.0/?method=artist.gettoptracks&artist=" + encoded_artist + 
                           "&api_key=" + api_key + "&format=json&limit=5";
@@ -1309,7 +1296,7 @@ private:
     }
     
     void get_top_albums(const std::string& artist_name, artist_info& info) {
-        std::string api_key = "b25b959554ed76058ac220b7b2e0a026";
+        std::string api_key = ""; // Supply your own key. The previously published key was revoked (2026-11).
         std::string encoded_artist = url_encode(artist_name);
         std::string path = "/2.0/?method=artist.gettopalbums&artist=" + encoded_artist + 
                           "&api_key=" + api_key + "&format=json&limit=5";
@@ -1831,11 +1818,9 @@ public:
             return false;
         }
         
-        // Open URL with flags to ignore SSL errors
+        // Open URL
         DWORD dwFlags = INTERNET_FLAG_RELOAD | 
-                       INTERNET_FLAG_NO_CACHE_WRITE |
-                       INTERNET_FLAG_IGNORE_CERT_CN_INVALID |
-                       INTERNET_FLAG_IGNORE_CERT_DATE_INVALID;
+                       INTERNET_FLAG_NO_CACHE_WRITE;
         
         if (url.find("https://") == 0) {
             dwFlags |= INTERNET_FLAG_SECURE;
